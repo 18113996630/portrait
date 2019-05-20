@@ -37,6 +37,7 @@ import org.apache.hadoop.hbase.client.ConnectionFactory;
 import org.apache.hadoop.hbase.client.ResultScanner;
 import org.apache.hadoop.hbase.regionserver.HRegionServer;
 import org.apache.hadoop.hbase.util.Bytes;
+import sun.misc.Cleaner;
 
 import java.io.IOException;
 
@@ -54,8 +55,8 @@ public class HbaseUtil {
 
 	private HbaseUtil() {
 		Configuration configuration = new Configuration();
-		configuration.set("hbase.zookeeper.quorum", "s201:2181");
-		configuration.set("hbase.rootdir", "hdfs://s101:8020/hbase");
+		configuration.set("hbase.zookeeper.quorum", "s201:2181,s202:2181,s203:2181");
+		configuration.set("hbase.rootdir", "hdfs://s201:8020/hbase");
 		try {
 			connection = ConnectionFactory.createConnection(configuration);
 			admin = connection.getAdmin();
@@ -117,11 +118,12 @@ public class HbaseUtil {
 
 	public void createNameSpace(String nameSpace) throws Exception {
 		admin.createNamespace(NamespaceDescriptor.create(nameSpace).build());
-		HTableDescriptor descriptor = new HTableDescriptor(TableName.valueOf("testNameSpace:testTable"));
-		descriptor.setDurability(Durability.SYNC_WAL);
-		HColumnDescriptor columnDescriptor = new HColumnDescriptor("cf");
-		descriptor.addFamily(columnDescriptor);
-		admin.createTable(descriptor);
+		System.out.println("命名空间创建成功");
+//		HTableDescriptor descriptor = new HTableDescriptor(TableName.valueOf("testNameSpace:testTable"));
+//		descriptor.setDurability(Durability.SYNC_WAL);
+//		HColumnDescriptor columnDescriptor = new HColumnDescriptor("cf");
+//		descriptor.addFamily(columnDescriptor);
+//		admin.createTable(descriptor);
 	}
 
 	public void deleteTable(String tableName) {
@@ -237,13 +239,14 @@ public class HbaseUtil {
 		HbaseUtil hbaseUtil = new HbaseUtil();
 		String name = "testNameSpace:testTable";
 		hbaseUtil.createNameSpace("testNameSpace");
-		hbaseUtil.listTables();
-		hbaseUtil.showDatas(name);
-		hbaseUtil.alterColumnFamily(name);
-		hbaseUtil.put(name);
-		hbaseUtil.delete(name);
-		hbaseUtil.get(name);
-		admin.close();
-		connection.close();
+//		hbaseUtil.listTables();
+//		hbaseUtil.showDatas(name);
+//		hbaseUtil.alterColumnFamily(name);
+//		hbaseUtil.put(name);
+//		hbaseUtil.delete(name);
+//		hbaseUtil.get(name);
+//		admin.close();
+//		connection.close();
+		close();
 	}
 }
