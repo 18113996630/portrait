@@ -8,12 +8,12 @@ import java.util.regex.Pattern;
 
 /**
  * @Author hrong
- * @ClassName DataUtil
+ * @ClassName DateUtil
  * @Description
  * @Date 2019/5/20 11:22
  **/
 @Slf4j
-public class DataUtil {
+public class DateUtil {
 	public static String transformAge2Year(String ageString) {
 		String yearType = "未知";
 		int age = Integer.parseInt(ageString);

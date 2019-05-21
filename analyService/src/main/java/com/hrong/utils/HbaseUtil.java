@@ -1,11 +1,14 @@
 package com.hrong.utils;
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
+import com.hrong.conf.ConfigurationManager;
 import com.hrong.conf.HbaseConfig;
+import com.hrong.constant.ConfigConstant;
 import com.hrong.core.SpringContextHolder;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.Cell;
+import org.apache.hadoop.hbase.CellUtil;
 import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.HColumnDescriptor;
 import org.apache.hadoop.hbase.HTableDescriptor;
@@ -80,8 +83,8 @@ public class HbaseUtil {
 //				for (Map.Entry<String, String> confEntry : confMap.entrySet()) {
 //					conf.set(confEntry.getKey(), confEntry.getValue());
 //				}
-				conf.set("hbase.zookeeper.quorum", "s201:2181,s202:2181,s203:2181");
-				conf.set("hbase.rootdir", "hdfs://s201:8020/hbase");
+				conf.set(ConfigConstant.ZK_URL, ConfigurationManager.getProperty(ConfigConstant.ZK_URL));
+				conf.set(ConfigConstant.HBASE_DIR, ConfigurationManager.getProperty(ConfigConstant.HBASE_DIR));
 				connection = ConnectionFactory.createConnection(conf, pool);
 				admin = connection.getAdmin();
 				log.info("{}获取到hbase连接", FORMAT.format(new Date()));
@@ -180,7 +183,7 @@ public class HbaseUtil {
 	public void deleteColumnFamily(String tablename, String rowkey, String columnFamily) throws IOException {
 		TableName name = TableName.valueOf(tablename);
 		Table table = connection.getTable(name);
-		Delete d = new Delete(rowkey.getBytes()).deleteFamily(Bytes.toBytes(columnFamily));
+		Delete d = new Delete(rowkey.getBytes()).addFamily(Bytes.toBytes(columnFamily));
 		table.delete(d);
 	}
 
@@ -195,7 +198,7 @@ public class HbaseUtil {
 	public void deleteColumn(String tablename, String rowkey, String columnFamily, String column) throws IOException {
 		TableName name = TableName.valueOf(tablename);
 		Table table = connection.getTable(name);
-		Delete d = new Delete(rowkey.getBytes()).deleteColumn(Bytes.toBytes(columnFamily), Bytes.toBytes(column));
+		Delete d = new Delete(rowkey.getBytes()).addColumn(Bytes.toBytes(columnFamily), Bytes.toBytes(column));
 		table.delete(d);
 	}
 
@@ -207,7 +210,7 @@ public class HbaseUtil {
 	 * @param rowKey    行名
 	 */
 	public static String selectRow(String tablename, String rowKey) throws IOException {
-		String record = "";
+		StringBuilder record = new StringBuilder();
 		TableName name = TableName.valueOf(tablename);
 		Table table = connection.getTable(name);
 		Get g = new Get(rowKey.getBytes());
@@ -215,9 +218,9 @@ public class HbaseUtil {
 		NavigableMap<byte[], NavigableMap<byte[], NavigableMap<Long, byte[]>>> map = rs.getMap();
 		for (Cell cell : rs.rawCells()) {
 			String str = transformCell2Str(cell);
-			record += str;
+			record.append(str);
 		}
-		return record;
+		return record.toString();
 	}
 
 	/**
@@ -377,11 +380,10 @@ public class HbaseUtil {
 
 	private static String transformCell2Str(Cell cell) {
 		StringBuffer stringBuffer = new StringBuffer().append(Bytes.toString(cell.getRow())).append("\t")
-				.append(Bytes.toString(cell.getFamily())).append("\t")
-				.append(Bytes.toString(cell.getQualifier())).append("\t")
-				.append(Bytes.toString(cell.getValue())).append("\n");
-		String str = stringBuffer.toString();
-		return str;
+				.append(Bytes.toString(CellUtil.cloneFamily(cell))).append("\t")
+				.append(Bytes.toString(CellUtil.cloneQualifier(cell))).append("\t")
+				.append(Bytes.toString(CellUtil.cloneValue(cell))).append("\n");
+		return stringBuffer.toString();
 	}
 
 	private void close() {

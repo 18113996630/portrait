@@ -1,5 +1,15 @@
 hbase:
   conf:
     confMaps:
-      hbase.zookeeper.quorum : s201:2181,s202:2181,s203:2181
-      hbase.rootdir : hdfs://s201:8020/hbase
+      hbase.zookeeper.quorum: s201:2181,s202:2181,s203:2181
+      hbase.rootdir: hdfs://s201:8020/hbase
+mongodb:
+  host: s201
+  port: 10143
+  dataSource:
+    name:
+      portrait
+  collection:
+    name:
+      year_base
+
