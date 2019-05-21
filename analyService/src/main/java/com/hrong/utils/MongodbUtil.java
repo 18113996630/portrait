@@ -1,5 +1,6 @@
 package com.hrong.utils;
 
+import com.hrong.constant.ConfigConstant;
 import com.hrong.entity.PageVO;
 import com.mongodb.BasicDBObject;
 import com.mongodb.MongoClient;
@@ -32,6 +33,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import static com.hrong.constant.ConfigConstant.MONGO_DOCUMENT_ID;
+
 /**
  * @Author hrong
  * @ClassName MongodbUtil
@@ -40,11 +43,11 @@ import java.util.Set;
  **/
 @Slf4j
 public class MongodbUtil {
-	private static MongoClient MONGODB_CLIENT = null;
-	private static String MONGODB_IP = null;
-	private static Integer MONGODB_PORT = null;
-	private static String MONGODB_DATABASE_NAME = null;
-	private static String MONGODB_COLLECTION_NAME = null;
+	private static MongoClient MONGODB_CLIENT;
+	private static String MONGODB_IP;
+	private static Integer MONGODB_PORT;
+	private static String MONGODB_DATABASE_NAME;
+	private static String MONGODB_COLLECTION_NAME;
 	static{
 		CompositeConfiguration compositeConfiguration = new CompositeConfiguration();
 		try {
@@ -62,9 +65,8 @@ public class MongodbUtil {
 	}
 	/**
 	 * 初始化mongodb数据源
-	 * @return
 	 */
-	public static MongoDatabase getMongodbDatabase(){
+	private static MongoDatabase getMongodbDatabase(){
 		return MONGODB_CLIENT.getDatabase(MONGODB_DATABASE_NAME);
 	}
 
@@ -79,31 +81,27 @@ public class MongodbUtil {
 	}
 	/**
 	 * 获取mongodb的表对象
-	 * @return
 	 */
 	public static MongoCollection<Document> getMongoCollection(){
 		return getMongodbDatabase().getCollection(MONGODB_COLLECTION_NAME);
 	}
 	/**
 	 * 获取mongodb的表对象
-	 * @return
 	 */
-	public static MongoCollection<Document> getMongoCollection(String collectionName){
+	private static MongoCollection<Document> getMongoCollection(String collectionName){
 		return getMongodbDatabase().getCollection(collectionName);
 	}
 	/**
 	 * 通过map插入一条数据到表中
-	 * @param map
 	 */
 	public static void insert2CollectionByMap(String collection, Map<String,Object> map){
 		getMongoCollection(collection).insertOne(handleMap(map));
 	}
 	/**
 	 * 通过集合map一次性插入多条数据到表中
-	 * @param listMap
 	 */
 	public static void insert2CollectionByListMap(String collection, List<Map<String,Object>> listMap){
-		List<Document> list = new ArrayList<Document>();
+		List<Document> list = new ArrayList<>();
 		for(Map<String,Object> map : listMap){
 			Document document = handleMap(map);
 			list.add(document);
@@ -112,17 +110,15 @@ public class MongodbUtil {
 	}
 	/**
 	 * 通过实体对象插入一条数据到表中
-	 * @param obj
 	 */
 	public static void insert2CollectionByModel(String collectionName, Object obj){
 		getMongoCollection(collectionName).insertOne(handleModel(obj));
 	}
 	/**
 	 * 通过集合实体对象一次性插入多条数据到表中
-	 * @param listObj
 	 */
 	public static void insert2CollectionByListModel(String collection, List<Object> listObj){
-		List<Document> list = new ArrayList<Document>();
+		List<Document> list = new ArrayList<>();
 		for(Object obj : listObj){
 			Document document = handleModel(obj);
 			list.add(document);
@@ -145,47 +141,28 @@ public class MongodbUtil {
 	 * documentList.add(new Document("num",1));
 	 * documentList.add(new Document("num",2));
 	 * document.append("$or",documentList);
-	 * @param queryDocument
-	 * @param sortDocument
-	 * @param pageVO
-	 * @return
 	 */
 	public static String queryCollectionByCondition(String collection, Document queryDocument, Document sortDocument, PageVO pageVO){
 		if(null == queryDocument || null == sortDocument || null == pageVO){
 			return null;
 		}else{
-			String returnList = getQueryCollectionResult(collection, queryDocument,sortDocument,pageVO);
-			return returnList;
+			return getQueryCollectionResult(collection, queryDocument,sortDocument,pageVO);
 		}
 	}
 	/**
 	 * 通过不定条件map查询出表中的所有数据,只限于等于的条件
-	 * @param map
-	 * @param sortDocument
-	 * @param pageVO
-	 * @return
 	 */
 	public static String queryCollectionByMap(String collection, Map<String,Object> map,Document sortDocument,PageVO pageVO){
-		String sql = getQueryCollectionResult(collection, handleMap(map),sortDocument,pageVO);
-		return sql;
+		return getQueryCollectionResult(collection, handleMap(map),sortDocument,pageVO);
 	}
 	/**
 	 * 通过不定条件实体对象obj查询出表中的所有数据,只限于等于的条件
-	 * @param obj
-	 * @param sortDocument
-	 * @param pageVO
-	 * @return
 	 */
 	public static String queryCollectionByModel(String collection, Object obj,Document sortDocument,PageVO pageVO){
-		String sql = getQueryCollectionResult(collection, handleModel(obj),sortDocument,pageVO);
-		return sql;
+		return getQueryCollectionResult(collection, handleModel(obj),sortDocument,pageVO);
 	}
 	/**
 	 * 接收Document组装的查询对象,处理子集查询结果并以JSON的形式返回前端
-	 * @param queryDocument
-	 * @param sortDocument
-	 * @param pageVO
-	 * @return
 	 */
 	private static String getQueryCollectionResult(String collection, Document queryDocument,Document sortDocument,PageVO pageVO){
 		FindIterable<Document> findIterable = getMongoCollection(collection).find(queryDocument)
@@ -264,7 +241,7 @@ public class MongodbUtil {
 	 * @return
 	 */
 	public static Map<String,String> getALLCollectionNameOfMap() {
-		Map<String,String> map = new HashMap<String,String>();
+		Map<String,String> map = new HashMap<String,String>(25);
 		MongoIterable<String> mongoIterable = getMongodbDatabase().listCollectionNames();
 		for(String name : mongoIterable){
 			map.put(name,name);
@@ -314,7 +291,7 @@ public class MongodbUtil {
 	 */
 	public static void updateCollectionById(String collection, String id,Map<String,Object> updateMap){
 		Document queryDocument = new Document();
-		ObjectId objId = new ObjectId(id);//注意在处理主键问题上一定要用ObjectId转一下
+		ObjectId objId = new ObjectId(id);
 		queryDocument.append("_id", objId);
 		Document updateDocument = handleMap(updateMap);
 		getMongoCollection(collection).updateOne(queryDocument,new Document("$set",updateDocument));
@@ -379,17 +356,17 @@ public class MongodbUtil {
 	public static int saveOrUpdateOneRecord(String collection, Document document){
 		int count = 0;
 		MongoCollection<Document> mongoCollection = getMongoCollection(collection);
-		if (!document.containsKey("_id")) {
+		if (!document.containsKey(MONGO_DOCUMENT_ID)) {
 			ObjectId id = new ObjectId();
-			document.put("_id", id);
+			document.put(MONGO_DOCUMENT_ID, id);
 			mongoCollection.insertOne(document);
 			log.info("传入对象不含_id属性,执行插入操作,table:{}",collection);
 			count = 1;
 			return count;
 		}
 		Document matchDoc = new Document();
-		String objectId = document.get("_id").toString();
-		matchDoc.put("_id", new ObjectId(objectId));
+		String objectId = document.get(MONGO_DOCUMENT_ID).toString();
+		matchDoc.put(MONGO_DOCUMENT_ID, new ObjectId(objectId));
 		MongoCursor<Document> iterator = mongoCollection.find(matchDoc).iterator();
 		while (iterator.hasNext()) {
 			matchDoc = iterator.next();
@@ -417,7 +394,7 @@ public class MongodbUtil {
 			document = new Document();
 			try {
 				Class clz = obj.getClass();
-				Field fields[] = clz.getDeclaredFields();
+				Field[] fields = clz.getDeclaredFields();
 				for(Field field : fields){
 					String fieldName = field.getName();
 					PropertyDescriptor propertyDescriptor = new PropertyDescriptor(fieldName,clz);
@@ -449,7 +426,8 @@ public class MongodbUtil {
 				document.append(key,(value == null ? "" : value));
 			}
 		}else{
-			document = new Document("","");//这种设置查询不到任何数据
+			//这种设置查询不到任何数据
+			document = new Document("","");
 		}
 		return document;
 	}

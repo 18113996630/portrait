@@ -14,6 +14,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PageVO {
-	private int pageNum;
-	private int pageSize;
+	private Integer pageNum;
+	private Integer pageSize;
 }

@@ -21,6 +21,7 @@ public class ConfigConstant {
 	/**
 	 * mongodb相关
 	 */
+	public static final String MONGO_DOCUMENT_ID = "_id";
 	public static final String MONGO_TABLE_YEAR = "year_census";
 	public static final String MONGO_TABLE_CARRIER = "carrier_census";
 	public static final String MONGO_TABLE_EMAIL = "email_census";

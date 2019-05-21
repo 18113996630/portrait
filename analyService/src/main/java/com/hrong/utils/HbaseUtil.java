@@ -379,11 +379,10 @@ public class HbaseUtil {
 	}
 
 	private static String transformCell2Str(Cell cell) {
-		StringBuffer stringBuffer = new StringBuffer().append(Bytes.toString(cell.getRow())).append("\t")
-				.append(Bytes.toString(CellUtil.cloneFamily(cell))).append("\t")
-				.append(Bytes.toString(CellUtil.cloneQualifier(cell))).append("\t")
-				.append(Bytes.toString(CellUtil.cloneValue(cell))).append("\n");
-		return stringBuffer.toString();
+		return Bytes.toString(CellUtil.cloneRow(cell)) + "\t" +
+				Bytes.toString(CellUtil.cloneFamily(cell)) + "\t" +
+				Bytes.toString(CellUtil.cloneQualifier(cell)) + "\t" +
+				Bytes.toString(CellUtil.cloneValue(cell)) + "\n";
 	}
 
 	private void close() {
@@ -401,8 +400,6 @@ public class HbaseUtil {
 
 	public static void main(String[] args) throws Exception {
 		HbaseUtil hbaseUtil = getInstance();
-//		hbaseUtil.createTable("student", new String[]{"base_info"});
-//		hbaseUtil.insertOneRecord("student", "1", "base_info", "name", "zhangsan");
 		List student = hbaseUtil.scanReportDataByRowKeyword("student", "1");
 		hbaseUtil.close();
 	}
