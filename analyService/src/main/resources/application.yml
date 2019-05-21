@@ -1,6 +1,5 @@
 hbase:
   conf:
-    zk:
-      "hbase.zookeeper.quorum":"s201:2181,s202:2181,s203:2181"
-    dir:
-      "hbase.rootdir":"hdfs://s201:8020/hbase"
+    confMaps:
+      hbase.zookeeper.quorum : s201:2181,s202:2181,s203:2181
+      hbase.rootdir : hdfs://s201:8020/hbase

@@ -3,6 +3,7 @@ package com.hrong.core;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
+import org.springframework.stereotype.Component;
 
 /**
  * @Author hrong
@@ -10,6 +11,7 @@ import org.springframework.context.ApplicationContextAware;
  * @Description
  * @Date 2019/5/20 15:42
  **/
+@Component
 public class SpringContextHolder  implements ApplicationContextAware {
 
 	private static ApplicationContext applicationContext;
