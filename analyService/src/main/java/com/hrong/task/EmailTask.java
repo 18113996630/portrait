@@ -28,9 +28,7 @@ public class EmailTask {
 	public static void main(String[] args) {
 		final ParameterTool params = ParameterTool.fromArgs(args);
 		final ExecutionEnvironment env = ExecutionEnvironment.getExecutionEnvironment();
-
 		env.getConfig().setGlobalJobParameters(params);
-
 		DataSource<String> text = env.readTextFile(params.get("input"));
 
 		try {

@@ -320,7 +320,6 @@ public class HbaseUtil {
 		ResultScanner scanner = table.getScanner(scan);
 		try {
 			for (Result result : scanner) {
-				//TODO 此处根据业务来自定义实现
 				list.add(null);
 			}
 		} finally {

@@ -34,13 +34,7 @@ public class EmailMap extends RichMapFunction<String, EmailInfo> {
 		EmailInfo emailInfo = null;
 		try {
 			String userId = data[0];
-			String userName = data[1];
-			String sex = data[2];
-			String telPhone = data[3];
 			String email = data[4];
-			String age = data[5];
-			String registerTime = data[6];
-			String userType = data[7];
 			Email companyByEmail = EmailUtil.getRelationCompanyByEmail(email);
 
 			hbaseUtil.insertOneRecord(ConfigConstant.HBASE_TABLE_USER_INFO, userId,

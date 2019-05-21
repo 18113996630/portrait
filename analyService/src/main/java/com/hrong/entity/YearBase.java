@@ -18,7 +18,7 @@ import java.io.Serializable;
 public class YearBase extends BaseEntity implements Serializable {
 	private static final long serialVersionUID = 4719102622215737005L;
 	/**
-	 * 年代类型
+	 * 年代类型，比如90后
 	 */
 	private String yearType;
 }

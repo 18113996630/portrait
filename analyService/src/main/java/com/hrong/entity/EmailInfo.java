@@ -14,5 +14,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class EmailInfo extends BaseEntity {
+	/**
+	 * 邮件运营商
+	 */
 	private String email;
 }
