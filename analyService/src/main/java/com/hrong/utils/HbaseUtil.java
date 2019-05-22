@@ -78,16 +78,11 @@ public class HbaseUtil {
 	private HbaseUtil() {
 		if (connection == null) {
 			try {
-				//将hbase配置类中定义的配置加载到连接池中每个连接里
-//				Map<String, String> confMap = hbaseConfig.getConfMaps();
-//				for (Map.Entry<String, String> confEntry : confMap.entrySet()) {
-//					conf.set(confEntry.getKey(), confEntry.getValue());
-//				}
 				conf.set(ConfigConstant.ZK_URL, ConfigurationManager.getProperty(ConfigConstant.ZK_URL));
 				conf.set(ConfigConstant.HBASE_DIR, ConfigurationManager.getProperty(ConfigConstant.HBASE_DIR));
 				connection = ConnectionFactory.createConnection(conf, pool);
 				admin = connection.getAdmin();
-				log.info("{}获取到hbase连接", FORMAT.format(new Date()));
+				log.error("{}获取到hbase连接", FORMAT.format(new Date()));
 			} catch (IOException e) {
 				log.error("HbaseUtils实例初始化失败！错误信息为：" + e.getMessage(), e);
 			}
@@ -121,7 +116,7 @@ public class HbaseUtil {
 			desc.addFamily(new HColumnDescriptor(cf));
 		}
 		admin.createTable(desc);
-		log.info("成功创建表:{},columnFamily:{}", tableName, Arrays.toString(columnFamily));
+		log.error("成功创建表:{},columnFamily:{}", tableName, Arrays.toString(columnFamily));
 	}
 
 	/**

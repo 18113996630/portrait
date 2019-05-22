@@ -61,4 +61,6 @@ public class Order implements Serializable {
 	 * 2：已退款
 	 */
 	private Integer payStatus;
+
+
 }

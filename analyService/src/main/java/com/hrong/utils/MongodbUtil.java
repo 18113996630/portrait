@@ -508,8 +508,7 @@ public class MongodbUtil {
 		list.add(21);
 		list.add(22);
 		FindIterable<Document> findIterable =
-				//getMongoCollection(collection).find(Filters.and(Filters.lt("num",22),Filters.gt("num",17)));
-				//getMongoCollection(collection).find(Filters.in("num",17,18));
+				getMongoCollection(collection).find(Filters.nin("num",list));
 				getMongoCollection(collection).find(Filters.nin("num", list));
 		MongoCursor<Document> mongoCursor = findIterable.iterator();
 		while (mongoCursor.hasNext()) {

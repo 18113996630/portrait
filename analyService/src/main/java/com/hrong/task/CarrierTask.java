@@ -50,7 +50,7 @@ public class CarrierTask {
 					MongodbUtil.saveOrUpdateOneRecord(ConfigConstant.MONGO_TABLE_CARRIER, resultDoc);
 				}
 			}
-			log.info("成功将{}条数据持久化至mongdb", carrierInfos.size());
+			log.error("成功将{}条数据持久化至mongdb", carrierInfos.size());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

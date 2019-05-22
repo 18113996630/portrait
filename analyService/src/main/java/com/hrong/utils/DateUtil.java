@@ -54,7 +54,7 @@ public class DateUtil {
 		instance.setTime(new Date());
 		instance.add(Calendar.YEAR, year);
 		instance.add(Calendar.MONTH, month);
-		instance.add(Calendar.DAY_OF_MONTH, day);
+		instance.add(Calendar.DAY_OF_YEAR, day);
 		instance.add(Calendar.HOUR, hour);
 		instance.add(Calendar.MINUTE, minute);
 		instance.add(Calendar.SECOND, second);

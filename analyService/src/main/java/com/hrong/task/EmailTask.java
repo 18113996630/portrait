@@ -48,7 +48,7 @@ public class EmailTask {
 					MongodbUtil.saveOrUpdateOneRecord(ConfigConstant.MONGO_TABLE_EMAIL, resultDoc);
 				}
 			}
-			log.info("成功将{}条数据持久化至mongdb", emailInfos.size());
+			log.error("成功将{}条数据持久化至mongdb", emailInfos.size());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

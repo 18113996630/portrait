@@ -46,7 +46,7 @@ public class YearBaseTask {
 					MongodbUtil.saveOrUpdateOneRecord(ConfigConstant.MONGO_TABLE_YEAR, resultDoc);
 				}
 			}
-			log.info("成功将{}条数据持久化至mongdb", yearType.size());
+			log.error("成功将{}条数据持久化至mongdb", yearType.size());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
