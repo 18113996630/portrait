@@ -5,7 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * @Author huangrong
+ * @Author hrong
  * @ClassName ConsumerIndex
  * @Description
  * @Date 2019/5/21 20:11
@@ -17,5 +17,6 @@ public class ConsumerIndex extends BaseEntity {
 	/**
 	 * 消费能力指数 0.3*订单均价+0.3*订单最高价+0.4*下单频率
 	 */
-	private String index;
+	private Double index;
+	private Integer userId;
 }

@@ -56,15 +56,15 @@ public class MongodbUtil {
 		MONGODB_PORT = ConfigurationManager.getInteger("mongodb.port");
 		MONGODB_DATABASE_NAME = ConfigurationManager.getProperty("mongodb.dataSource.name");
 		MONGODB_COLLECTION_NAME = ConfigurationManager.getProperty("mongodb.collection.name");
-		log.info("准备获取mongo连接,host:{},port:{},source:{}", MONGODB_IP, MONGODB_PORT, MONGODB_DATABASE_NAME);
+		log.error("准备获取mongo连接,host:{},port:{},source:{}", MONGODB_IP, MONGODB_PORT, MONGODB_DATABASE_NAME);
 		MONGODB_CLIENT = new MongoClient(MONGODB_IP, MONGODB_PORT);
 	}
 
 	public static void main(String[] args) {
 		MongoDatabase database = MONGODB_CLIENT.getDatabase(MONGODB_DATABASE_NAME);
-		log.info("db名字:{}", database.getName());
-		MongoCollection<Document> year_census = database.getCollection("year_census");
-		FindIterable<Document> documents = year_census.find();
+		log.error("db名字:{}", database.getName());
+		MongoCollection<Document> yearCensus = database.getCollection("yearCensus");
+		FindIterable<Document> documents = yearCensus.find();
 		for (Document document : documents) {
 			System.out.println(document);
 		}
@@ -215,8 +215,7 @@ public class MongodbUtil {
 		if (sql.length() > 0) {
 			sql.deleteCharAt(sql.lastIndexOf(","));
 		}
-		String returnList = getFinalQueryResultsSql(lineNum, sql.toString());
-		return returnList;
+		return getFinalQueryResultsSql(lineNum, sql.toString());
 	}
 
 	/**
@@ -224,7 +223,6 @@ public class MongodbUtil {
 	 *
 	 * @param lineNum  子集中JSON的条数
 	 * @param querySql 子集中的所有结果JSON
-	 * @return
 	 */
 	private static String getFinalQueryResultsSql(Integer lineNum, String querySql) {
 		StringBuilder sql = new StringBuilder();
@@ -249,11 +247,9 @@ public class MongodbUtil {
 
 	/**
 	 * 以list的形式获取mongdb库中的所有表
-	 *
-	 * @return
 	 */
 	public static List<String> getALLCollectionNameOfList() {
-		List<String> list = new ArrayList<String>();
+		List<String> list = new ArrayList<>();
 		MongoIterable<String> mongoIterable = getMongodbDatabase().listCollectionNames();
 		for (String name : mongoIterable) {
 			list.add(name);
@@ -263,11 +259,9 @@ public class MongodbUtil {
 
 	/**
 	 * 以map的形式获取mongdb库中的所有表
-	 *
-	 * @return
 	 */
 	public static Map<String, String> getALLCollectionNameOfMap() {
-		Map<String, String> map = new HashMap<String, String>(25);
+		Map<String, String> map = new HashMap<>(25);
 		MongoIterable<String> mongoIterable = getMongodbDatabase().listCollectionNames();
 		for (String name : mongoIterable) {
 			map.put(name, name);
@@ -279,18 +273,13 @@ public class MongodbUtil {
 	 * 获取表中的数据条数
 	 *
 	 * @param queryDocument 传null为查询表中所有数据
-	 * @return
 	 */
 	public static Integer queryCollectionCount(String collection, Document queryDocument) {
-		int count = (int) getMongoCollection(collection).count(queryDocument);
-		return count;
+		return (int) getMongoCollection(collection).count(queryDocument);
 	}
 
 	/**
 	 * 通过表ID获取某条数据
-	 *
-	 * @param id
-	 * @return
 	 */
 	public static String queryCollectionModelById(String collection, String id) {
 		//注意在处理主键问题上一定要用ObjectId转一下
@@ -309,10 +298,7 @@ public class MongodbUtil {
 	public static Document queryOneRecordByDocument(String collection, Document doc) {
 		MongoCollection<Document> mongoCollection = getMongodbDatabase().getCollection(collection);
 		FindIterable<Document> documents = mongoCollection.find(doc);
-		for (Document document : documents) {
-			return document;
-		}
-		return null;
+		return documents.first();
 	}
 
 	/**
@@ -354,14 +340,11 @@ public class MongodbUtil {
 		ObjectId objectId = new ObjectId(id);
 		Bson bson = Filters.eq("_id", objectId);
 		DeleteResult deleteResult = getMongoCollection(collection).deleteOne(bson);
-		int count = (int) deleteResult.getDeletedCount();
-		return count;
+		return (int) deleteResult.getDeletedCount();
 	}
 
 	/**
 	 * 根据MAP删除表中的某些数据
-	 *
-	 * @param map
 	 */
 	public static void deleteCollectionByMap(String collection, Map<String, Object> map) {
 		getMongoCollection(collection).deleteMany(handleMap(map));
@@ -378,8 +361,6 @@ public class MongodbUtil {
 
 	/**
 	 * 根据预先手工拼接的document删除表中的某些数据
-	 *
-	 * @param document
 	 */
 	public static void deleteCollectionByDocument(String collection, Document document) {
 		getMongoCollection(collection).deleteMany(document);
@@ -404,7 +385,7 @@ public class MongodbUtil {
 			ObjectId id = new ObjectId();
 			document.put(MONGO_DOCUMENT_ID, id);
 			mongoCollection.insertOne(document);
-			log.info("传入对象不含_id属性,执行插入操作,table:{}", collection);
+			log.error("传入对象不含_id属性,执行插入操作,table:{}", collection);
 			count = 1;
 			return count;
 		}
@@ -415,7 +396,7 @@ public class MongodbUtil {
 		while (iterator.hasNext()) {
 			matchDoc = iterator.next();
 			count = Math.toIntExact(mongoCollection.updateOne(matchDoc, new Document("$set", document)).getModifiedCount());
-			log.info("传入对象包含_id属性,执行更新操作。table:{}, 影响条数:{}, 原数据:{}, 现数据:{}", collection,
+			log.error("传入对象包含_id属性,执行更新操作。table:{}, 影响条数:{}, 原数据:{}, 现数据:{}", collection,
 					count, matchDoc, document);
 			break;
 		}
@@ -508,8 +489,8 @@ public class MongodbUtil {
 		list.add(21);
 		list.add(22);
 		FindIterable<Document> findIterable =
-				getMongoCollection(collection).find(Filters.nin("num",list));
 				getMongoCollection(collection).find(Filters.nin("num", list));
+		getMongoCollection(collection).find(Filters.nin("num", list));
 		MongoCursor<Document> mongoCursor = findIterable.iterator();
 		while (mongoCursor.hasNext()) {
 			Document document = mongoCursor.next();

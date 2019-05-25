@@ -1,16 +1,21 @@
 package com.hrong.task;
 
+import com.hrong.entity.ConsumerIndex;
 import com.hrong.map.ConsumerIndexMap;
 import com.hrong.reduce.ConsumerIndexReduce;
 import com.hrong.utils.DateUtil;
 import org.apache.flink.api.common.operators.Order;
 import org.apache.flink.api.java.ExecutionEnvironment;
 import org.apache.flink.api.java.operators.DataSource;
+import org.apache.flink.api.java.operators.SortPartitionOperator;
 import org.apache.flink.api.java.utils.ParameterTool;
 import scala.Tuple2;
 
+import static org.apache.flink.api.common.operators.Order.ASCENDING;
+import static org.apache.flink.api.common.operators.Order.DESCENDING;
+
 /**
- * @Author huangrong
+ * @Author hrong
  * @ClassName ConsumerIndexTask
  * @Description 消费能力指数计算任务
  * 先将不符合时间条件的过滤掉,将数据map为Order类型，
@@ -31,10 +36,16 @@ public class ConsumerIndexTask {
 
 		DataSource<Tuple2> pararmDataSource = env.fromElements(new Tuple2<>("startTime", DateUtil.getNowTime()),
 				new Tuple2<>("endTime", DateUtil.getTimeByOffset(-1)));
-		text.map(new ConsumerIndexMap())
+		SortPartitionOperator<ConsumerIndex> consumerIndex = text.map(new ConsumerIndexMap())
 				.withBroadcastSet(pararmDataSource, "date_param")
-				.sortPartition("createTime", Order.ASCENDING)
-				.groupBy("userId");
-//				.reduceGroup(new ConsumerIndexReduce());
+				.sortPartition("createTime", ASCENDING)
+				.groupBy("userId")
+				.reduceGroup(new ConsumerIndexReduce())
+				.sortPartition("index", DESCENDING);
+		try {
+			consumerIndex.print();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 }

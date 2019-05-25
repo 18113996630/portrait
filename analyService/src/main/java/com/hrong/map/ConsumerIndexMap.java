@@ -17,7 +17,7 @@ import static com.hrong.constant.ParamConstant.END_TIME;
 import static com.hrong.constant.ParamConstant.START_TIME;
 
 /**
- * @Author huangrong
+ * @Author hrong
  * @ClassName ConsumerIndexMap
  * @Description
  * @Date 2019/5/21 20:26
@@ -52,7 +52,7 @@ public class ConsumerIndexMap extends RichMapFunction<String, Order> {
 
 	@Override
 	public Order map(String input) throws Exception {
-		if (StringUtils.isBlank(java.lang.String.valueOf(input))) {
+		if (StringUtils.isBlank(String.valueOf(input))) {
 			log.error("输入数据为空，无法获取订单相关信息");
 			return null;
 		}
@@ -66,8 +66,6 @@ public class ConsumerIndexMap extends RichMapFunction<String, Order> {
 			//"5,5,2,1,5,68.9,68.9,0.0,0.0,2019-02-27 13:40:12,2019-02-27 13:41:12,1,1"
 			//"6,1,7,1,5,200,200,0.0,0.0,2019-01-02 12:40:12,2019-01-02 12:41:12,1,1"
 			//"7,7,5,1,4,400,400.1,0.0,0.1,2019-04-18 09:40:12,2019-04-18 09:41:12,3,1"
-			//"8,5,9,1,2,999,999,999,0.0,2019-02-06 17:00:12,2019-02-06 17:01:12,1,1"
-			//"9,9,4,1,1,10,10,0.0,0.0,2019-05-22 23:40:12,2019-05-22 23:41:12,3,1"
 			Integer id = Integer.valueOf(data[0]);
 			Integer userId = Integer.valueOf(data[1]);
 			Integer productId = Integer.valueOf(data[2]);

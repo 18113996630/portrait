@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.time.FastDateFormat;
 import scala.Int;
 
+import java.sql.Timestamp;
 import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Date;
@@ -81,6 +82,18 @@ public class DateUtil {
 		return yearType;
 	}
 
+	/**
+	 * 计算时间间隔天数
+	 */
+	public static int computeIntervalWith2Time(Timestamp before, Timestamp after){
+		instance.setTime(before);
+		int interval = 0;
+		while (instance.getTime().before(after)) {
+			instance.add(Calendar.DAY_OF_YEAR, 1);
+			interval++;
+		}
+		return interval;
+	}
 	public static void main(String[] args) throws ParseException {
 		String startTime = DateUtil.getTimeByOffset(-1);
 		String endTime = DateUtil.getTimeByOffset(1);
