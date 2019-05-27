@@ -3,6 +3,7 @@ package com.hrong.data.controller;
 import com.hrong.data.entity.ResultVo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -24,6 +25,11 @@ public class DataController {
 		String addr = request.getRemoteUser();
 		log.info("data:{}", addr);
 		return ResultVo.success(addr);
+	}
+
+	@PostMapping(value = "/log")
+	public Object receiveLog(String data) {
+		return data;
 	}
 
 }
