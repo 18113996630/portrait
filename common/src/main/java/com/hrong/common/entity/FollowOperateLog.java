@@ -39,4 +39,8 @@ public class FollowOperateLog implements Serializable {
 	 */
 	private int terminalType;
 	private String ip;
+	/**
+	 * 品牌
+	 */
+	private String brand;
 }

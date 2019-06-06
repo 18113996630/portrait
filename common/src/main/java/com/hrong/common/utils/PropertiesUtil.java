@@ -1,7 +1,9 @@
 package com.hrong.common.utils;
 
-import com.typesafe.config.Config;
-import com.typesafe.config.ConfigFactory;
+import lombok.extern.slf4j.Slf4j;
+
+import java.io.IOException;
+import java.util.Properties;
 
 /**
  * @Author hrong
@@ -9,18 +11,17 @@ import com.typesafe.config.ConfigFactory;
  * @Description
  * @Date 2019/5/27 11:12
  **/
+@Slf4j
 public class PropertiesUtil {
-	private static Config CONFIG = null;
 
-	private PropertiesUtil(String resourceName) {
-		CONFIG = ConfigFactory.load(resourceName);
-	}
-
-	public static PropertiesUtil getInstance(String resourceName) {
-		return new PropertiesUtil(resourceName);
-	}
-
-	public String get(String key) {
-		return CONFIG.getString(key).trim();
+	public static Properties getProperties(String resourceName) {
+		Properties properties = new Properties();
+		try {
+			properties.load(ClassLoader.getSystemResourceAsStream(resourceName));
+		} catch (IOException e) {
+			e.printStackTrace();
+			log.error("获取失败:{}", e.getMessage());
+		}
+		return properties;
 	}
 }

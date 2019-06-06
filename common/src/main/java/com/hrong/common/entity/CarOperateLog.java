@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.PipedReader;
 import java.io.Serializable;
 import java.sql.Timestamp;
 
@@ -39,4 +40,8 @@ public class CarOperateLog implements Serializable {
 	 */
 	private int terminalType;
 	private String ip;
+	/**
+	 * 品牌
+	 */
+	private String brand;
 }
